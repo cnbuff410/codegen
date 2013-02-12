@@ -90,7 +90,6 @@ func main() {
 		check(err)
 		_, err = io.Copy(dest, src)
 		check(err)
-		fmt.Println(srcFile)
 	}
 }
 
