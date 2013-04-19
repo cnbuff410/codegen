@@ -67,6 +67,12 @@ func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
 
 func check(err error, c appengine.Context) {
 	if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
 		c.Errorf("%v", err)
 	}
+}
+func serve404(w http.ResponseWriter) {
+        w.WriteHeader(http.StatusNotFound)
+        w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+        fmt.Fprintln(w, "Not Found")
 }
