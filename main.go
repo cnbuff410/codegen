@@ -1,6 +1,6 @@
 /*
  * Codegen: A handy template code generating tool.
- * 
+ *
  * Author: likunarmstrong@gmail.com
  */
 
@@ -38,6 +38,10 @@ func init() {
 
 func main() {
 	flag.Parse()
+	if flag.NFlag() == 0 {
+		flag.Usage()
+		return
+	}
 
 	configFilePath := os.Getenv("HOME") + configFileName
 	tplList := make([]string, 0)
@@ -83,7 +87,9 @@ func main() {
 	// Generate templates if needed
 	if len(genName) > 0 {
 		srcFile := tplRoot + "/" + genName + ".tpl"
-		dstFile := "./template"
+		nameItems := strings.Split(genName, "-")
+		dstFile := "./" + strings.Join(nameItems[:len(nameItems)-1],
+			"-") + "." + nameItems[len(nameItems)-1]
 		src, err := os.Open(srcFile)
 		check(err)
 		dest, err := os.Create(dstFile)
