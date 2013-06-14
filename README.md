@@ -3,14 +3,26 @@ codegen
 
 A handy template code generating tool.
 
-Suffix of generated file is the last part of the template filename separated by
-dash. For example:
+There are two ways to generate file template
 
-"xxx-go.tpl"
+- If a full file name with suffix is provided, the suffix will be matched with
+template file. For example:
 
-will be generated as
+>"test.py"
+>
+>will be generated as
+>
+>"py.tpl"
 
-"xxx.go"
+- If the name of template is provided(signal word), Suffix of generated file is
+the last part of the template filename separated by dash. For example:
+
+>"xxx-go.tpl"
+>
+>will be generated as
+>
+>"xxx.go"
+
 
 ### Setup
 

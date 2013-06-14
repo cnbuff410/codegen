@@ -22,12 +22,18 @@ const (
 	genUsage       = "Generate template"
 	dirUsage       = "Specify the location of template folder"
 	configFileName = "/.codegen"
+
+	fileNameErrMsg = "Not a valid file name.\n" +
+		"Either the file name is not recognizable or the template for " +
+		"this file type is not supplied"
 )
 
 var (
 	genName string
 	isList  bool
 	tplDir  string
+	srcFile string
+	dstFile string
 )
 
 func init() {
@@ -86,10 +92,63 @@ func main() {
 
 	// Generate templates if needed
 	if len(genName) > 0 {
-		srcFile := tplRoot + "/" + genName + ".tpl"
-		nameItems := strings.Split(genName, "-")
-		dstFile := "./" + strings.Join(nameItems[:len(nameItems)-1],
-			"-") + "." + nameItems[len(nameItems)-1]
+		templateNames := make([]string, 0)
+		err := filepath.Walk(tplRoot,
+			func(path string, f os.FileInfo,
+				err error) error {
+				if err != nil {
+					fmt.Println(err)
+					return err
+				}
+				if f.IsDir() {
+					// Root dir, ignore
+					return nil
+				}
+				templateNames = append(templateNames,
+					filepath.Base(path))
+				return nil
+			})
+		if err != nil {
+			fmt.Println("Something wrong with template library, " +
+				"are you sure you set it up already?")
+			return
+		}
+
+		// If a real file name is provided, pick template based on suffix
+		nameComponents := strings.Split(genName, ".")
+		if len(nameComponents) == 2 {
+			// Probably a complete file name with suffix
+			suffix := nameComponents[1]
+			for _, v := range templateNames {
+				v = strings.Split(v, ".")[0]
+				if v == suffix {
+					srcFile = tplRoot + "/" + v + ".tpl"
+					dstFile = "./" + genName
+					break
+				}
+			}
+		} else if len(nameComponents) == 1 {
+			for _, v := range templateNames {
+				if v == genName {
+					srcFile = tplRoot + "/" + genName + ".tpl"
+					nameItems := strings.Split(genName, "-")
+					dstFile = "./" + strings.Join(nameItems[:len(nameItems)-1],
+						"-") + "." + nameItems[len(nameItems)-1]
+					break
+				}
+			}
+		} else {
+			fmt.Println(fileNameErrMsg)
+			return
+		}
+
+		// Provided file name is not supported
+		if len(dstFile) == 0 {
+			fmt.Println(fileNameErrMsg)
+			return
+		}
+
+		// Write into file
 		src, err := os.Open(srcFile)
 		check(err)
 		dest, err := os.Create(dstFile)
