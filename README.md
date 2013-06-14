@@ -10,9 +10,13 @@ template file. For example:
 
 >"test.py"
 >
->will be generated as
+>will be matched with
 >
 >"py.tpl"
+>
+>and generated as
+>
+>"test.py"
 
 - If the name of template is provided(signal word), Suffix of generated file is
 the last part of the template filename separated by dash. For example:
