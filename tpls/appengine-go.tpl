@@ -1,3 +1,6 @@
+// Author: likunarmstrong@gmail.com
+
+// Package main xxx
 package main
 
 import (
