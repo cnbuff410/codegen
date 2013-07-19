@@ -3,12 +3,15 @@ codegen
 
 A handy template code generating tool.
 
-There are two ways to generate file template
+There are two kinds of template files, one is used to indicate filetype, e.g.,
+go.tpl or py.tpl. The other is used to indicate application specific file template, e.g., test-go.tpl
 
-- If a full file name with suffix is provided, the suffix will be matched with
-template file. For example:
+Therefore, there are two ways to generate file template
 
->"test.py"
+- If you want to generate a file with sepcific type, provide a full file name with suffix, the suffix will be matched with
+corresponding template file. For example:
+
+>"codegen -g test.py"
 >
 >will be matched with
 >
@@ -18,26 +21,26 @@ template file. For example:
 >
 >"test.py"
 
-- If the name of template is provided(signal word), Suffix of generated file is
+- If you want to generate a spcific file, like a yaml file for go appengine, provide the name of template, the generated file will have suffix which is
 the last part of the template filename separated by dash. For example:
 
->"xxx-go.tpl"
+>"codegen -g test-go.tpl"
 >
 >will be generated as
 >
->"xxx.go"
+>"test.go"
 
 
 ### Setup
 
 To test it out, use
 
-    go get -u github.com/cnbuff410/codegen (-u flag for "update")
+go get -u github.com/cnbuff410/codegen (-u flag for "update")
 
 Then
 
-    codegen -h
+codegen -h
 
 ### TODO
 
-Enable regex match
+Regex match

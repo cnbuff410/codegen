@@ -50,7 +50,7 @@ func main() {
 	}
 
 	configFilePath := os.Getenv("HOME") + configFileName
-	tplList := make([]string, 0)
+	tplFullPathList := make([]string, 0)
 
 	// Check if path to template is being set
 	if len(tplDir) == 0 {
@@ -77,17 +77,38 @@ func main() {
 	if isList {
 		fmt.Println("Available templates:")
 		fmt.Println("====================")
+
+		// A slice to store templates only valid when user provide full file name
+		tplSuffixList := make([]string, 0)
+		// A slice to store templates can be directly used by -g
+		tplFullNameList := make([]string, 0)
 		filepath.Walk(tplRoot, func(path string, fileinfo os.FileInfo, _ error) error {
 			if fileinfo.IsDir() || !strings.EqualFold(filepath.Ext(path), ".tpl") {
 				return nil
 			}
-			fmt.Println("* " + strings.Split(filepath.Base(path), ".")[0])
-			tplList = append(tplList, path)
+			fName := strings.Split(filepath.Base(path), ".")[0]
+			if strings.Contains(fName, "-") {
+				tplFullNameList = append(tplFullNameList, fName)
+			} else {
+				tplSuffixList = append(tplSuffixList, fName)
+			}
+			tplFullPathList = append(tplFullPathList, path)
 			return nil
 		})
 
+		fmt.Println("\nUse full template name showing below after -g to generate:")
+		for _, n := range tplFullNameList {
+			fmt.Printf("* %s\n", n)
+		}
+
+		fmt.Println("\nUse YOUROWNNAME + template file type showing below after -g to generate:")
+		for _, n := range tplSuffixList {
+			fmt.Printf("* %s\n", n)
+		}
+
 		fmt.Println("\nPut new templates into folder:")
 		fmt.Println(tplRoot)
+		fmt.Printf("\n")
 	}
 
 	// Generate templates if needed
@@ -128,8 +149,15 @@ func main() {
 				}
 			}
 		} else if len(nameComponents) == 1 {
+			if !strings.Contains(nameComponents[0], "-") {
+				fmt.Printf("\n")
+				fmt.Println("Oops, looks like you are trying to generate a file of specific type?")
+				fmt.Println("If so, please provide a full filename with suffix, e.g., my.go")
+				fmt.Printf("\n")
+				return
+			}
 			for _, v := range templateNames {
-				if v == genName {
+				if v == genName+".tpl" {
 					srcFile = tplRoot + "/" + genName + ".tpl"
 					nameItems := strings.Split(genName, "-")
 					dstFile = "./" + strings.Join(nameItems[:len(nameItems)-1],
