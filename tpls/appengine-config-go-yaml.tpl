@@ -15,5 +15,3 @@ handlers:
   static_dir: assets/js
 - url: /.*
   script: _go_app
-- url: /.*
-  script: _go_app

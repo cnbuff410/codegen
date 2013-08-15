@@ -115,8 +115,8 @@ func main() {
 	if len(genName) > 0 {
 		templateNames := make([]string, 0)
 		err := filepath.Walk(tplRoot,
-			func(path string, f os.FileInfo,
-				err error) error {
+			func(path string, f os.FileInfo, err error) error {
+				fmt.Println(path)
 				if err != nil {
 					fmt.Println(err)
 					return err
@@ -125,8 +125,7 @@ func main() {
 					// Root dir, ignore
 					return nil
 				}
-				templateNames = append(templateNames,
-					filepath.Base(path))
+				templateNames = append(templateNames, filepath.Base(path))
 				return nil
 			})
 		if err != nil {
