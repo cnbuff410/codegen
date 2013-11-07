@@ -43,14 +43,15 @@ func init() {
 }
 
 func main() {
+	configFilePath := os.Getenv("HOME") + configFileName
+	tplFullPathList := make([]string, 0)
+
 	flag.Parse()
 	if flag.NFlag() == 0 {
 		flag.Usage()
+		fmt.Println("Your current config file is " + configFilePath)
 		return
 	}
-
-	configFilePath := os.Getenv("HOME") + configFileName
-	tplFullPathList := make([]string, 0)
 
 	// Check if path to template is being set
 	if len(tplDir) == 0 {
