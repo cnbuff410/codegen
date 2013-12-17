@@ -117,7 +117,6 @@ func main() {
 		templateNames := make([]string, 0)
 		err := filepath.Walk(tplRoot,
 			func(path string, f os.FileInfo, err error) error {
-				fmt.Println(path)
 				if err != nil {
 					fmt.Println(err)
 					return err
