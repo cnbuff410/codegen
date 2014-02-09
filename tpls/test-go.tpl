@@ -1,4 +1,5 @@
-// Tests for xxx.go
+// Created by Kun Li(likunarmstrong@gmail.com) on xx/xx/xx.
+// Copyright (c) 2014 Athlete Architect. All rights reserved.
 
 package xxx_test
 
