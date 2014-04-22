@@ -2,9 +2,10 @@
 <head>
     <meta charset="utf-8" />
     <title>A example</title>
+    <link rel="stylesheet" href="./css/xxx.css">
 </head>
 <body>
-    <header> 
+    <header>
         <h1></h1>
         <nav>
             <ul>
