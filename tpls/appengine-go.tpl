@@ -21,13 +21,14 @@ func init() {
 	http.Handle("/", s)
 }
 
-func testHandler(w http.ResponseWriter, r *http.Request) {
+func testHandler(w http.ResponseWriter, r *http.Request) error {
 	c := appengine.NewContext(r)
 	r.ParseForm()
 
 	c.Infof("path", r.URL.Path)
 	c.Infof("scheme", r.URL.Scheme)
 	fmt.Fprintf(w, "Hello world!")
+    return nil
 
 	//return fmt.Errorf("invalid date")
 	/*
