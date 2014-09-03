@@ -23,6 +23,13 @@ T2
 :python:`xlabel("xxxx", fontsize=18, color="red")`
 
 
+Images
+===================
+
+For instance:
+.. image:: images/ball1.gif
+
+
 Link
 =====
 
