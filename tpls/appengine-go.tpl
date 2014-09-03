@@ -11,22 +11,25 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"github.com/gorilla/mux"
 )
 
 func init() {
-	http.HandleFunc("/", testHandler)
-	http.HandleFunc("/upload", uploadFileHandler)
+	r := mux.NewRouter()
+	s := r.PathPrefix("/").Subrouter()
+	s.HandleFunc("/", errorHandler(testHandler)).Methods("GET")
+	http.Handle("/", s)
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 	r.ParseForm()
 
-	if r.Method == "GET" {
-		c.Infof("path", r.URL.Path)
-		c.Infof("scheme", r.URL.Scheme)
-		fmt.Fprintf(w, "Hello world!")
-	}
+	c.Infof("path", r.URL.Path)
+	c.Infof("scheme", r.URL.Scheme)
+	fmt.Fprintf(w, "Hello world!")
+
+	//return fmt.Errorf("invalid date")
 	/*
 		t := template.Must(template.ParseFiles("templates/main.html"))
 
@@ -38,14 +41,13 @@ func testHandler(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
-func check(err error, c appengine.Context) {
-	if err != nil {
-                http.Error(w, err.Error(), http.StatusInternalServerError)
-		c.Errorf("%v", err)
+func errorHandler(f func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := f(w, r)
+		if err != nil {
+			c := appengine.NewContext(r)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			c.Errorf("failed to handling %q: %v", r.RequestURI, err)
+		}
 	}
-}
-func serve404(w http.ResponseWriter) {
-        w.WriteHeader(http.StatusNotFound)
-        w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-        fmt.Fprintln(w, "Not Found")
 }
