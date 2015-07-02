@@ -1,16 +1,17 @@
-application: xxxxxxx
-module: xxxxx
-version: 1
 runtime: go
 api_version: go1
-instance_class: F1
-automatic_scaling:
-  min_idle_instances: 1
-  max_idle_instances: automatic
-  max_pending_latency: 100ms
-  max_concurrent_requests: 50  # max: 500
+vm: true
 
-default_expiration: "3d"
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 20
+  cpu_utilization:
+    target_utilization: 0.8
+
+resources:
+  cpu: 0.5
+  memory_gb: 1
+  disk_size_gb: 50
 
 handlers:
 # SEO

@@ -5,13 +5,14 @@
 package main
 
 import (
-	"appengine"
 	"fmt"
-	//"html/template"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"github.com/gorilla/mux"
+
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/log"
 )
 
 func init() {
@@ -19,14 +20,15 @@ func init() {
 	s := r.PathPrefix("/").Subrouter()
 	s.HandleFunc("/", errorHandler(testHandler)).Methods("GET")
 	http.Handle("/", s)
+
+	appengine.Main()
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) error {
-	c := appengine.NewContext(r)
-	r.ParseForm()
+    ctx := appengine.NewContext(r)
+	log.Infof(ctx, "Serving the front page.")
 
-	c.Infof("path", r.URL.Path)
-	c.Infof("scheme", r.URL.Scheme)
+	r.ParseForm()
 	fmt.Fprintf(w, "Hello world!")
     return nil
 
