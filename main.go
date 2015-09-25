@@ -44,7 +44,7 @@ func init() {
 
 func main() {
 	configFilePath := os.Getenv("HOME") + configFileName
-	tplFullPathList := make([]string, 0)
+	var tplFullPathList []string
 
 	flag.Parse()
 	if flag.NFlag() == 0 {
@@ -72,7 +72,7 @@ func main() {
 	}
 	reader := bufio.NewReader(configFile)
 	line, _, _ := reader.ReadLine()
-	tplRoot := string(line)
+	tplRoot, _ := filepath.Abs(strings.TrimSpace(string(line)))
 
 	// Show list of available templates if needed
 	if isList {
@@ -80,10 +80,14 @@ func main() {
 		fmt.Println("====================")
 
 		// A slice to store templates only valid when user provide full file name
-		tplSuffixList := make([]string, 0)
+		var tplSuffixList []string
 		// A slice to store templates can be directly used by -g
-		tplFullNameList := make([]string, 0)
-		filepath.Walk(tplRoot, func(path string, fileinfo os.FileInfo, _ error) error {
+		var tplFullNameList []string
+		filepath.Walk(tplRoot, func(path string, fileinfo os.FileInfo, err error) error {
+			if err != nil {
+				fmt.Println(err.Error())
+				return err
+			}
 			if fileinfo.IsDir() || !strings.EqualFold(filepath.Ext(path), ".tpl") {
 				return nil
 			}
@@ -114,7 +118,7 @@ func main() {
 
 	// Generate templates if needed
 	if len(genName) > 0 {
-		templateNames := make([]string, 0)
+		var templateNames []string
 		err := filepath.Walk(tplRoot,
 			func(path string, f os.FileInfo, err error) error {
 				if err != nil {
